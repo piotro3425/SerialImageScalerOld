@@ -22,7 +22,7 @@ namespace SerialImageScaler
 
         static void Main(string[] args)
         {
-            Program Pr = new Program();            
+            Program Pr = new Program();
         }
 
         public Program()
@@ -34,7 +34,7 @@ namespace SerialImageScaler
             {
                 this.ImagePrescaler = double.Parse(ScaleStr.Replace(".", ","));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("Incorect image prescaler value");
                 Console.ReadKey();
@@ -47,7 +47,7 @@ namespace SerialImageScaler
             {
                 this.ImageQuality = Int64.Parse(QualityStr);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("Incorect quality value");
                 Console.ReadKey();
@@ -73,7 +73,7 @@ namespace SerialImageScaler
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Wrong input destination directory. There is no 'in' folder in current directory");
+                Console.WriteLine("Wrong input destination directory. There is no 'in' folder in current directory\n\n" + ex.ToString());
                 Console.ReadKey();
                 return;
             }
@@ -85,18 +85,12 @@ namespace SerialImageScaler
                 {
                     using (Bitmap Image = new Bitmap(SingleImage))
                     {
-                        // From NET
-                        
                         EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, this.ImageQuality);
                         myEncoderParameters.Param[0] = myEncoderParameter;
 
-                        
                         NewSize.Height = Convert.ToInt32(Image.Height * this.ImagePrescaler);
                         NewSize.Width = Convert.ToInt32(Image.Width * this.ImagePrescaler);
-                        //NewSize.Height =Image.Height;
-                        //NewSize.Width = Image.Width;
                         this.ResizeImage(Image, NewSize).Save(SingleImage.Replace("in", "out"), jgpEncoder, myEncoderParameters);;
-                        /*Image.*/
                         Console.WriteLine("File: " + iterator.ToString() + @" \ " + FullImagePath.Length.ToString() + " Prescaler: " + this.ImagePrescaler + " Quality = " + this.ImageQuality);
                         iterator++;
                         if (iterator % 10 == 0)
@@ -119,8 +113,6 @@ namespace SerialImageScaler
             }
         }
 
-
-        // From NET
         public Bitmap ResizeImage(Bitmap imgToResize, Size size)
         {
             try
@@ -132,8 +124,6 @@ namespace SerialImageScaler
                 Bitmap b = new Bitmap(size.Width, size.Height);
                 using (Graphics g = Graphics.FromImage((Image)b))
                 {
-                    //Graphics g = Graphics.FromImage((Image)b);
-                    //g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                     g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bicubic;
                     g.DrawImage(imgToResize, 0, 0, size.Width, size.Height);
                 }
@@ -147,7 +137,6 @@ namespace SerialImageScaler
             }
         }
 
-        // From NET
         private ImageCodecInfo GetEncoder(ImageFormat format)
         {
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
